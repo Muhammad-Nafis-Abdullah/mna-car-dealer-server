@@ -1,7 +1,6 @@
 /**---------------------------
  * one time for a computer
  * ---------------------------
- * 
  * 1. create heroku account
  * 2. verify email
  * 3. install heroku CLI
@@ -22,7 +21,7 @@
  * 
  * 
  * ----------------------------
- *  update server with new changes
+ * update server with new changes
  * ----------------------------
  * 1. update in git with (add commit and push command)
  * 2. git push heroku master
