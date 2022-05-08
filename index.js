@@ -27,6 +27,7 @@ async function run() {
         await client.connect();
         const inventoryCollection = client.db('mnaCarDealer').collection('inventory');
 
+        // get all inventory
         app.get("/inventories", async (req, res) => {
             const query = {};
             const cursor = inventoryCollection.find(query);
@@ -34,12 +35,41 @@ async function run() {
             res.send(inventories);
         });
 
+        // get specific inventory by id
         app.get("/inventory/:id", async (req, res) => {
             const inventoryId = req.params.id;
             const query = { _id: ObjectId(inventoryId) };
             const inventory = await inventoryCollection.findOne(query);
             res.send(inventory);
         });
+
+        // delete specific inventory by
+        app.delete("/inventory/:id", async (req, res) => {
+            const inventoryId = req.params.id;
+            const query = { _id: ObjectId(inventoryId) };
+            const result = await inventoryCollection.deleteOne(query);
+            res.send(result);
+        });
+
+        // update item quantity
+        app.put("/inventory/:id", async (req, res) => {
+            const inventoryId = req.params.id;
+            const updatedQuantity = req.body;
+            const filter = { _id: ObjectId(inventoryId) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    quantity: updatedQuantity.quantity,
+                },
+            };
+            const result = await inventoryCollection.updateOne(
+                filter,
+                updatedDoc,
+                options
+            );
+            res.send(result);
+        });
+
 
     } finally {
         // Ensures that the client will close when you finish/error
