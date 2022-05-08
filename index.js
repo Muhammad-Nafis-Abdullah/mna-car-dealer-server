@@ -12,6 +12,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+function verifyToken(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).send("Can't Authorize The Access");
+    }
+    next();
+}
 
 // ------------------------------------------------
 
@@ -26,6 +33,16 @@ async function run() {
     try {
         await client.connect();
         const inventoryCollection = client.db('mnaCarDealer').collection('inventory');
+
+
+        // jwt api
+        app.post("/login", async (req, res) => {
+            const user = req.body;
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: "7d",
+            });
+            res.send({ accessToken });
+        });
 
         // get all inventory
         app.get("/inventories", async (req, res) => {
