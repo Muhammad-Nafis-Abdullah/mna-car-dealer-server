@@ -1,6 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 
@@ -17,11 +18,29 @@ app.use(cors());
 
 
 
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@my-project.owhux.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+// console.log(uri);
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-// testing response - [delete it before start]
-app.get('/',(req,res)=> {
-    res.send('response successfully sent');
-})
+async function run() {
+    try {
+        await client.connect();
+        const inventoryCollection = client.db('mnaCarDealer').collection('inventory');
+
+        app.get("/inventories", async (req, res) => {
+            const query = {};
+            const cursor = inventoryCollection.find(query);
+            const inventories = await cursor.toArray();
+            res.send(inventories);
+        });
+
+
+    } finally {
+        // Ensures that the client will close when you finish/error
+        // await client.close();
+    }
+}
+run().catch(console.dir);
 
 
 
@@ -30,8 +49,12 @@ app.get('/',(req,res)=> {
 
 // ------------------------------------------------
 
+app.get('/',(req,res)=> {
+    res.send('server is working');
+})
+
 
 // listening the server at the given port
 app.listen(port,()=> {
-    console.log(`server is running at the port : ${port}`);
+    console.log(`working on port : ${port}`);
 })
