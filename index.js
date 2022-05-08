@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 
@@ -34,6 +34,12 @@ async function run() {
             res.send(inventories);
         });
 
+        app.get("/inventory/:id", async (req, res) => {
+            const inventoryId = req.params.id;
+            const query = { _id: ObjectId(inventoryId) };
+            const inventory = await inventoryCollection.findOne(query);
+            res.send(inventory);
+        });
 
     } finally {
         // Ensures that the client will close when you finish/error
