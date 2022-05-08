@@ -43,7 +43,7 @@ async function run() {
             res.send(inventory);
         });
 
-        // delete specific inventory by
+        // delete specific inventory by id
         app.delete("/inventory/:id", async (req, res) => {
             const inventoryId = req.params.id;
             const query = { _id: ObjectId(inventoryId) };
@@ -51,7 +51,7 @@ async function run() {
             res.send(result);
         });
 
-        // update item quantity
+        // update specific item quantity
         app.put("/inventory/:id", async (req, res) => {
             const inventoryId = req.params.id;
             const updatedQuantity = req.body;
