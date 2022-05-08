@@ -59,7 +59,7 @@ async function run() {
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
-                    quantity: updatedQuantity.quantity,
+                    quantity: JSON.stringify(updatedQuantity.quantity),
                 },
             };
             const result = await inventoryCollection.updateOne(
@@ -69,6 +69,14 @@ async function run() {
             );
             res.send(result);
         });
+
+        // add new inventory in database
+        app.post("/inventory", async (req, res) => {
+            const newInventory = req.body;
+            const result = await inventoryCollection.insertOne(newInventory);
+            res.send(result);
+        });
+
 
 
     } finally {
