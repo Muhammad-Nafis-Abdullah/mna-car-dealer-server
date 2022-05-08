@@ -77,6 +77,14 @@ async function run() {
             res.send(result);
         });
 
+        // items added by individual user
+        app.get("/myItems",  async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const cursor = inventoryCollection.find(query);
+            const myItems = await cursor.toArray();
+            res.send(myItems);
+        });
 
 
     } finally {
